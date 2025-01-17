@@ -31,25 +31,22 @@ def get_all_data(db: Session):
     return db.query(Product).all()
 
 def get_latest_data(db: Session):
-    # Filtrovaná data seřazená podle produktu a nejnovějšího data
     subquery = (
         db.query(
             Product.product_id,
-            func.max(Product.date).label("latest_date")
+            func.max(func.date(Product.date)).label("latest_date")  
         )
         .group_by(Product.product_id)
         .subquery()
     )
 
-    # Připojení na původní tabulky pro získání detailů
     filtered_data = (
         db.query(Product, Product_info)
-        .join(subquery, (Product.product_id == subquery.c.product_id) & (Product.date == subquery.c.latest_date))
+        .join(subquery, (Product.product_id == subquery.c.product_id) & (func.date(Product.date) == subquery.c.latest_date))
         .join(Product_info, Product.product_id == Product_info.id)
         .all()
     )
 
-    # Sestavení výsledku
     butter_info = []
     for product, product_info in filtered_data:
         product_dict = {
