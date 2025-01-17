@@ -3,7 +3,7 @@ import requests
 url = "https://butter-scraper.onrender.com/scrape_save" # docker - render
 
 try:
-    response = requests.post(url)
+    response = requests.get(url)
     response.raise_for_status()  # Vyvolá chybu, pokud HTTP status není 200
     data = response.json()
     print("Response from Render endpoint:")
