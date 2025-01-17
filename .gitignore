@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environments
+venv/
+.env
+
+# Database files
+/database/*.db
+
+# Render and IDE-specific files
+*.log
+.idea/
+.vscode/
