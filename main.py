@@ -14,12 +14,14 @@ def get_all():
     for item in all_data:
         
         print((f"ALL: ID: {item.product_id}, Name: {item.shop}, Price: {item.price}, Date: {item.date}"))
+    return all_data
 
 @app.get("/get_latest_data")
 def get_latest():
     data = get_latest_data(db)
     for item in data:
         print(f"LATEST: Name: {item['product_name']}, Shop: {item['shop']}, Price: {item['price']}, Quantity: {item['quantity']}")
+    return data
 
 @app.get("/get_product_info")
 def get_product_info():
