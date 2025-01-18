@@ -43,13 +43,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // Handle scraping and updating the table
     scrapeButton.addEventListener("click", async () => {
         try {
+            dataTableBody.innerHTML = "";
             const response = await fetch("https://butter-scraper.onrender.com/scrape_save", {
                 method: "POST",
             });
             const data = await response.json();
-
-            // Clear existing data in the table
-            dataTableBody.innerHTML = "";
 
             // Render the table rows
             data.forEach((item) => {
