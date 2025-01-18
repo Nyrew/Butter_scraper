@@ -13,20 +13,26 @@ document.addEventListener("DOMContentLoaded", () => {
             butterCardsContainer.innerHTML = "";
     
             data.forEach((item) => {
-                console.log(item.shops);  // Zkontrolujte obsah pole shops
                 const card = document.createElement("div");
                 card.className = "card";
                 
-                let shopsHtml = item.shops.map(shop => 
-                    `<p>${shop.shop}: ${shop.price} Kč</p>`
-                ).join('');
+                let shopsHtml = '';
+                for (let i = 0; i < item.shops.length; i++) {
+                    const shop = item.shops[i];
+                    shopsHtml += `
+                        <div class="shop-item">
+                            <p class="shop-name">${shop.shop}</p>
+                            <p class="shop-price">${shop.price} Kč</p>
+                        </div>
+                    `;
+                }
             
                 card.innerHTML = `
                     <img src="butter_image_placeholder.jpg" alt="Butter">
                     <h3>${item.product_name}</h3>
                     <p>Quantity: ${item.quantity} g</p>
                     <hr>
-                    ${shopsHtml}
+                    <div class="shops-container">${shopsHtml}</div>
                 `;
                 butterCardsContainer.appendChild(card);
             });
