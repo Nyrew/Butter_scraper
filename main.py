@@ -30,9 +30,21 @@ def get_all():
 @app.get("/get_latest_data")
 def get_latest():
     data = get_latest_data(db)
+    # Seskupit data podle názvu produktu
+    grouped_data = {}
     for item in data:
-        print(f"LATEST: Name: {item['product_name']}, Shop: {item['shop']}, Price: {item['price']}, Quantity: {item['quantity']}")
-    return data
+        product_name = item['product_name']
+        if product_name not in grouped_data:
+            grouped_data[product_name] = {
+                'product_name': product_name,
+                'quantity': item['quantity'],
+                'shops': []
+            }
+        grouped_data[product_name]['shops'].append({
+            'shop': item['shop'],
+            'price': item['price']
+        })
+    return list(grouped_data.values())
 
 @app.get("/get_product_info")
 def get_product_info():

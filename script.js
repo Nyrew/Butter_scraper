@@ -8,29 +8,25 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             const response = await fetch("https://butter-scraper.onrender.com/get_latest_data");
             const data = await response.json();
-
-            // Clear existing data
-            butterCardsContainer.innerHTML = "";  // Clear butter cards container
-
-            // Check if the data is in the correct format
-            if (data && Array.isArray(data)) {
-                // Render the butter cards
-                data.forEach((item) => {
-                    const card = document.createElement("div");
-                    card.className = "card";
-                    card.innerHTML = `
-                        <img src="butter_image_placeholder.jpg" alt="Butter">
-                        <h3>${item.product_name}</h3>
-                        <hr>
-                        <p>Shop: ${item.shop}</p>
-                        <p>Price: ${item.price} Kč</p>
-                        <p>Quantity: ${item.quantity} g</p>
-                    `;
-                    butterCardsContainer.appendChild(card);
-                });
-            } else {
-                console.error("Received invalid data format:", data);
-            }
+    
+            butterCardsContainer.innerHTML = "";
+    
+            data.forEach((item) => {
+                const card = document.createElement("div");
+                card.className = "card";
+                let shopsHtml = item.shops.map(shop => 
+                    `<p>${shop.shop}: ${shop.price} Kč</p>`
+                ).join('');
+                
+                card.innerHTML = `
+                    <img src="butter_image_placeholder.jpg" alt="Butter">
+                    <h3>${item.product_name}</h3>
+                    <p>Quantity: ${item.quantity} g</p>
+                    <hr>
+                    ${shopsHtml}
+                `;
+                butterCardsContainer.appendChild(card);
+            });
         } catch (error) {
             console.error("Error loading data:", error);
         }
