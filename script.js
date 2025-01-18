@@ -3,38 +3,40 @@ document.addEventListener("DOMContentLoaded", () => {
     const scrapeButton = document.getElementById("scrape-button");
     const dataTableBody = document.querySelector("#data-table tbody");
 
-    // Načtení nejnovějších dat a vykreslení tabulky, karet i textového výstupu
+    // Load the latest data and render the table, cards, and output
     async function loadLatestData() {
         try {
             const response = await fetch("https://butter-scraper.onrender.com/get_latest_data");
             const data = await response.json();
 
-            // Vymazání existujících dat
-            butterCardsContainer.innerHTML = "";
-            outputContainer.innerHTML = "";
+            // Clear existing data
+            butterCardsContainer.innerHTML = "";  // Clear butter cards container
 
-            // Zpracuj každou položku dat
-            data.forEach((item) => {
-                // Vytvoření karty
-                const card = document.createElement("div");
-                card.className = "card";
-                card.innerHTML = `
-                    <img src="butter_image_placeholder.jpg" alt="Butter">
-                    <h3>${item.product_name}</h3>
-                    <hr>
-                    <p>Shop: ${item.shop}</p>
-                    <p>Price: ${item.price} Kč</p>
-                    <p>Quantity: ${item.quantity} g</p>
-                `;
-                butterCardsContainer.appendChild(card);
-
-            });
+            // Check if the data is in the correct format
+            if (data && Array.isArray(data)) {
+                // Render the butter cards
+                data.forEach((item) => {
+                    const card = document.createElement("div");
+                    card.className = "card";
+                    card.innerHTML = `
+                        <img src="butter_image_placeholder.jpg" alt="Butter">
+                        <h3>${item.product_name}</h3>
+                        <hr>
+                        <p>Shop: ${item.shop}</p>
+                        <p>Price: ${item.price} Kč</p>
+                        <p>Quantity: ${item.quantity} g</p>
+                    `;
+                    butterCardsContainer.appendChild(card);
+                });
+            } else {
+                console.error("Received invalid data format:", data);
+            }
         } catch (error) {
             console.error("Error loading data:", error);
         }
     }
 
-    // Spuštění scrapování a vykreslení tabulky
+    // Handle scraping and updating the table
     scrapeButton.addEventListener("click", async () => {
         try {
             const response = await fetch("https://butter-scraper.onrender.com/scrape_save", {
@@ -42,10 +44,10 @@ document.addEventListener("DOMContentLoaded", () => {
             });
             const data = await response.json();
 
-            // Vymazání existujících dat v tabulce
+            // Clear existing data in the table
             dataTableBody.innerHTML = "";
 
-            // Zpracuj každou položku dat a vykresli ji v tabulce
+            // Render the table rows
             data.forEach((item) => {
                 const row = document.createElement("tr");
 
@@ -68,12 +70,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 dataTableBody.appendChild(row);
             });
 
+            // Reload the latest data to show the updated butter cards
+            loadLatestData();
         } catch (error) {
             console.error("Error scraping data:", error);
         }
     });
 
-
-    // Načtení dat při načtení stránky
+    // Load latest data on page load
     loadLatestData();
 });
