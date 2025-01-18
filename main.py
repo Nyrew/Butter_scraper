@@ -53,21 +53,26 @@ def scrape():
 
 @app.post("/scrape_save")
 def scrape_and_save():
-    scraped_data = scrape_data(CONFIGS)
-    print("Scrape successful!!")
-    save_scraped_data(db, scraped_data)
-    saved_data = []
-    for item in scraped_data:
-        product_info = next((prod for prod in PRODUCT_INFO if prod["id"] == item['product_id']), None)
-        saved_data.append({
-        "shop": item['shop'],
-        "product_name": product_info["name"] if product_info else None,  # Napáruj name
-        "price": item['price'],
-        "quantity": product_info['quantity'] if product_info else None
-    })
-    return saved_data
+    try:
+        scraped_data = scrape_data(CONFIGS)
+        print("Scrape successful!!")
+        
+        saved_data = []
+        for item in scraped_data:
+            product_info = next((prod for prod in PRODUCT_INFO if prod["id"] == item['product_id']), None)
+            saved_data.append({
+            "shop": item['shop'],
+            "product_name": product_info["name"] if product_info else None,  # Napáruj name
+            "price": item['price'],
+            "quantity": product_info['quantity'] if product_info else None
+        })
+            
+        save_scraped_data(db, scraped_data)
+        
+    except Exception as e:
+        print(f"Trying to scrape and save data and got this error: {e}")
     
-
+    return saved_data
 
 
 
