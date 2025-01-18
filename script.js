@@ -2,19 +2,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const butterCardsContainer = document.getElementById("butter-cards");
     const scrapeButton = document.getElementById("scrape-button");
     const dataTableBody = document.querySelector("#data-table tbody");
-    const outputContainer = document.getElementById("output");
 
-    // Načtení nejnovějších dat a vykreslení karet a textového výstupu
+    // Načtení nejnovějších dat a vykreslení tabulky, karet i textového výstupu
     async function loadLatestData() {
         try {
             const response = await fetch("https://butter-scraper.onrender.com/get_latest_data");
             const data = await response.json();
 
-            // Vymazání existujících karet a textového výstupu
+            // Vymazání existujících dat
             butterCardsContainer.innerHTML = "";
             outputContainer.innerHTML = "";
 
-            // Zpracuj každou položku dat pro karty a textový výstup
+            // Zpracuj každou položku dat
             data.forEach((item) => {
                 // Vytvoření karty
                 const card = document.createElement("div");
@@ -29,20 +28,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 `;
                 butterCardsContainer.appendChild(card);
 
-                // Přidání textového výstupu
-                const line = document.createElement("p");
-                line.textContent = `LATEST: Name: ${item.product_name}, Shop: ${item.shop}, Price: ${item.price} Kč, Quantity: ${item.quantity} g`;
-                outputContainer.appendChild(line);
             });
         } catch (error) {
-            console.error("Error loading latest data:", error);
+            console.error("Error loading data:", error);
         }
     }
 
-    // Načtení tabulky při kliknutí na tlačítko
-    async function loadTableData() {
+    // Spuštění scrapování a vykreslení tabulky
+    scrapeButton.addEventListener("click", async () => {
         try {
-            const response = await fetch("https://butter-scraper.onrender.com/get_latest_data");
+            const response = await fetch("https://butter-scraper.onrender.com/scrape_save", {
+                method: "POST",
+            });
             const data = await response.json();
 
             // Vymazání existujících dat v tabulce
@@ -70,26 +67,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 dataTableBody.appendChild(row);
             });
-        } catch (error) {
-            console.error("Error loading table data:", error);
-        }
-    }
 
-    // Spuštění scrapování a aktualizace dat
-    scrapeButton.addEventListener("click", async () => {
-        try {
-            const response = await fetch("https://butter-scraper.onrender.com/scrape_save", {
-                method: "POST",
-            });
-            await response.json();
-
-            // Aktualizace dat po scrapování
-            loadTableData();
         } catch (error) {
             console.error("Error scraping data:", error);
         }
     });
 
-    // Načtení dat pro karty a textový výstup při načtení stránky
+
+    // Načtení dat při načtení stránky
     loadLatestData();
 });
