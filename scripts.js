@@ -54,6 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    
     // Načtení dat při načtení stránky
     loadLatestData();
 });
