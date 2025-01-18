@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from database.database import get_db
 from database.model import Product_info
 from database.crud import save_scraped_data, get_all_data, get_latest_data
@@ -6,6 +7,16 @@ from scraper.config import CONFIGS
 from scraper.scraper import scrape_data
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://nyrew.github.io"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    
+)
+
 db = next(get_db())
 
 @app.get("/get_all_data")
