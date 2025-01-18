@@ -8,7 +8,8 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             const response = await fetch("https://butter-scraper.onrender.com/get_latest_data");
             const data = await response.json();
-    
+            console.log(data); 
+            
             butterCardsContainer.innerHTML = "";
     
             data.forEach((item) => {
