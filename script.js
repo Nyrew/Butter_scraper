@@ -47,45 +47,65 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Handle scraping and updating the table
+    let isFetching = false; // Zamezí opakovaným požadavkům
+
     scrapeButton.addEventListener("click", async () => {
+        if (isFetching) return; // Pokud již probíhá požadavek, nic nedělej
+    
+        isFetching = true; // Nastav příznak, že požadavek probíhá
+        scrapeButton.disabled = true; // Deaktivuj tlačítko během načítání
+        const loadingIndicator = document.createElement("div"); // Vytvoř loading ikonu
+        loadingIndicator.textContent = "Loading...";
+        loadingIndicator.className = "loading-indicator"; // Přidej třídu pro stylování
+        document.body.appendChild(loadingIndicator); // Přidej ikonu do dokumentu
+    
         try {
-            dataTableBody.innerHTML = "";
+            // Skryj tabulku, dokud nebudou data načtena
+            dataTable.style.display = "none";
+            dataTableBody.innerHTML = ""; // Vyčisti obsah tabulky
+    
+            // Odeslání požadavku na backend
             const response = await fetch("https://butter-scraper.onrender.com/scrape_save", {
                 method: "POST",
             });
             const data = await response.json();
-
-            // Render the table rows
+    
+            // Naplň tabulku daty
             data.forEach((item) => {
                 const row = document.createElement("tr");
-
+    
                 const shopCell = document.createElement("td");
                 shopCell.textContent = item.shop;
                 row.appendChild(shopCell);
-
+    
                 const productNameCell = document.createElement("td");
                 productNameCell.textContent = item.product_name;
                 row.appendChild(productNameCell);
-
+    
                 const priceCell = document.createElement("td");
                 priceCell.textContent = `${item.price} Kč`;
                 row.appendChild(priceCell);
-
+    
                 const quantityCell = document.createElement("td");
                 quantityCell.textContent = `${item.quantity} g`;
                 row.appendChild(quantityCell);
-
+    
                 dataTableBody.appendChild(row);
             });
-
-            // Reload the latest data to show the updated butter cards
+    
+            // Zobraz tabulku po úspěšném načtení dat
+            dataTable.style.display = "table";
+            // Načti nejnovější data pro aktualizaci
             loadLatestData();
         } catch (error) {
             console.error("Error scraping data:", error);
+        } finally {
+            // Vrať stav tlačítka a odeber loading ikonu
+            isFetching = false;
+            scrapeButton.disabled = false;
+            loadingIndicator.remove();
         }
     });
-
     // Load latest data on page load
     loadLatestData();
 });
