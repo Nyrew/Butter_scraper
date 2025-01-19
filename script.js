@@ -98,21 +98,65 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function displayPriceHistoryChart(history) {
         const ctx = document.getElementById('price-history-chart').getContext('2d');
-        const labels = history.map((entry) => entry.date);
-        const prices = history.map((entry) => entry.price);
 
+        // Collect all shops and map them to their respective price history
+        const shopPriceHistory = {};
+
+        // Iterate over the history and group data by shop
+        history.forEach(entry => {
+            if (!shopPriceHistory[entry.shop]) {
+                shopPriceHistory[entry.shop] = {
+                    label: entry.shop,
+                    data: [],
+                    borderColor: getRandomColor(),  // Assign a random color for each shop
+                    fill: false
+                };
+            }
+            shopPriceHistory[entry.shop].data.push({ x: entry.date, y: entry.price });
+        });
+
+        // Prepare datasets (one for each shop)
+        const datasets = Object.values(shopPriceHistory);
+
+        // Create the chart with each shop as a separate line
         new Chart(ctx, {
             type: 'line',
             data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Price History',
-                    data: prices,
-                    borderColor: '#4CAF50',
-                    fill: false,
-                }]
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        type: 'time',  // Use time scale for the x-axis
+                        time: {
+                            unit: 'minute',
+                            tooltipFormat: 'll HH:mm'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Date and Time'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Price (Kč)'
+                        }
+                    }
+                }
             }
         });
+    }
+
+    // Helper function to generate a random color for each shop
+    function getRandomColor() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
     }
 
     scrapeButton.addEventListener("click", async () => {
