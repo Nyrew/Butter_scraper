@@ -62,6 +62,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     console.log('Selected product:', item.product_name);
                 
                     const response = await fetch(`https://butter-scraper.onrender.com/get_price_history/${item.product_name}`);
+                    const url = `https://butter-scraper.onrender.com/get_price_history/${encodeURIComponent(item.product_name)}`;
+                    fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                    })
+                    .catch(error => console.error('Error:', error));
                     const history = await response.json();
                     displayPriceHistoryChart(history);  // Use displayPriceHistoryChart
                 });

@@ -1,6 +1,6 @@
 import requests
 
-url = "https://butter-scraper.onrender.com/get_last_scrape_date" # docker - render
+url = "https://butter-scraper.onrender.com/get_price_history/'Tatra Máslo'" # docker - render
 
 try:
     response = requests.get(url)
