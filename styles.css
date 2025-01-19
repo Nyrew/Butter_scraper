@@ -18,7 +18,19 @@ h1 {
 
 h2 {
     color: #333;
+    margin-top: 25px;
+}
+
+.loading-backend {
+    Display: none; 
+    text-align: center; 
+    font-size: 1.2em; 
+    color: #555;
+}
+
+#loading-backend {
     margin-top: 20px;
+    font-weight: bold;
 }
 
 .last-scrape-date {
@@ -28,6 +40,7 @@ h2 {
 
 button {
     padding: 10px 20px;
+    margin-top: 10px;
     margin-bottom: 20px;
     background-color: #4CAF50;
     color: white;

@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const dataTable = document.querySelector("#data-table");
     const dataTableBody = document.querySelector("#data-table tbody");
     const lastScrapeDateElement = document.getElementById("last-scrape-date");
+    const loadingBackendElement = document.getElementById("loading-backend");
 
     let isFetching = false;
 
@@ -27,6 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function loadLatestData() {
         try {
+            loadingBackendElement.style.display = "block"; 
             const response = await fetch("https://butter-scraper.onrender.com/get_latest_data");
 
             const data = await response.json();
@@ -71,11 +73,14 @@ document.addEventListener("DOMContentLoaded", () => {
                     minute: "2-digit",
                     second: "2-digit",
                 });
-                lastScrapeDateElement.textContent = `Last saved scrape: ${formattedDate}\n
-                Scraping can only be saved to the database once a day, but the scrape results are displayed in the table below.`;
+                lastScrapeDateElement.innerHTML  = `
+                    Last saved scrape: ${formattedDate}<br>
+                    Scraping can only be saved to the database once a day, but the scrape results are displayed in the table below.
+                `;
             } else {
-                lastScrapeDateElement.textContent = "Last saved scrape: Unknown";
+                lastScrapeDateElement.innerHTML  = "Last saved scrape: Unknown";
             }
+            loadingBackendElement.style.display = "none";
         } catch (error) {
             console.error("Error loading data:", error);
         }
