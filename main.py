@@ -30,7 +30,7 @@ def get_all():
 @app.get("/get_last_scrape_date")
 def get_last_scrape():
     last_scrape_date = get_latest_scrape_date(db)
-    return last_scrape_date
+    return {"date": last_scrape_date.isoformat()}
 
 @app.get("/get_latest_data")
 def get_latest():

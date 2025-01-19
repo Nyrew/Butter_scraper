@@ -56,18 +56,24 @@ document.addEventListener("DOMContentLoaded", () => {
                 butterCardsContainer.appendChild(card);
             });
 
+            // Fetch and display the last scrape date
             const scrapeResponse = await fetch("https://butter-scraper.onrender.com/get_last_scrape_date");
             const scrapeData = await scrapeResponse.json();
 
-            const scrapeDate = new Date(scrapeData.date);
-            const formattedDate = `${scrapeDate.getDate().toString().padStart(2, "0")}.${(
-                scrapeDate.getMonth() + 1
-            )
-                .toString()
-                .padStart(2, "0")}.${scrapeDate.getFullYear()} ${scrapeDate.getHours()
-                .toString()
-                .padStart(2, "0")}:${scrapeDate.getMinutes().toString().padStart(2, "0")}`;
-            lastScrapeDateElement.textContent = `Last scrape: ${formattedDate}`;
+            if (scrapeData.date) {
+                const lastScrapeDate = new Date(scrapeData.date); // Převeďte string na Date objekt
+                const formattedDate = lastScrapeDate.toLocaleString("cs-CZ", { // Použijte český formát
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                });
+                lastScrapeDateElement.textContent = `Last scrape: ${formattedDate}`;
+            } else {
+                lastScrapeDateElement.textContent = "Last scrape: Unknown";
+            }
         } catch (error) {
             console.error("Error loading data:", error);
         }
