@@ -106,8 +106,8 @@ document.addEventListener("DOMContentLoaded", () => {
     function displayPriceHistoryChart(history) {
         const ctx = document.getElementById('price-history-chart').getContext('2d');
     
-        // Ensure the date values are valid and convert them to ISO strings
-        const labels = history.map((entry) => new Date(entry.date).toISOString());
+        // Convert the date strings to Date objects
+        const labels = history.map((entry) => new Date(entry.date).toISOString());  // Convert to ISO string
         const prices = history.map((entry) => entry.price);
     
         // Destroy any existing chart before creating a new one
