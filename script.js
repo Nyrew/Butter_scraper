@@ -99,54 +99,48 @@ document.addEventListener("DOMContentLoaded", () => {
     function displayPriceHistoryChart(history) {
         const ctx = document.getElementById('price-history-chart').getContext('2d');
     
-        // If a chart already exists, destroy it to avoid errors
-        if (window.chart) {
-            window.chart.destroy();
+        // Ensure the date values are valid and convert them to ISO strings
+        const labels = history.map((entry) => new Date(entry.date).toISOString());
+        const prices = history.map((entry) => entry.price);
+    
+        // Destroy any existing chart before creating a new one
+        if (window.priceHistoryChart) {
+            window.priceHistoryChart.destroy();
         }
     
-        // Collect all shops and map them to their respective price history
-        const shopPriceHistory = {};
-    
-        // Iterate over the history and group data by shop
-        history.forEach(entry => {
-            if (!shopPriceHistory[entry.shop]) {
-                shopPriceHistory[entry.shop] = {
-                    label: entry.shop,
-                    data: [],
-                    borderColor: getRandomColor(),  // Assign a random color for each shop
-                    fill: false
-                };
-            }
-            shopPriceHistory[entry.shop].data.push({ x: entry.date, y: entry.price });
-        });
-    
-        // Prepare datasets (one for each shop)
-        const datasets = Object.values(shopPriceHistory);
-    
-        // Create the chart with each shop as a separate line
-        window.chart = new Chart(ctx, {
+        window.priceHistoryChart = new Chart(ctx, {
             type: 'line',
             data: {
-                datasets: datasets
+                labels: labels,
+                datasets: [{
+                    label: 'Price History',
+                    data: prices,
+                    borderColor: '#4CAF50',
+                    fill: false,
+                }]
             },
             options: {
                 responsive: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
                 scales: {
                     x: {
-                        type: 'time',  // Use time scale for the x-axis
+                        type: 'time',  // Ensure that Chart.js uses time scale for the x-axis
                         time: {
-                            unit: 'minute',
-                            tooltipFormat: 'll HH:mm'
+                            unit: 'day',  // Can be adjusted based on the range of your data
+                            tooltipFormat: 'll',
                         },
                         title: {
                             display: true,
-                            text: 'Date and Time'
+                            text: 'Date',
                         }
                     },
                     y: {
                         title: {
                             display: true,
-                            text: 'Price (Kč)'
+                            text: 'Price (Kč)',
                         }
                     }
                 }
