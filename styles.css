@@ -173,14 +173,15 @@ table th {
     animation: spin 1s linear infinite;
 }
 
-.price-history-chart {
-    width: 400px;
-    height: 200px;
-    margin-top: 20px;
+/* Price History Chart */
+#price-history-chart-container {
+    width: 80%;
+    margin: 40px auto;
+    text-align: center;
 }
 
 #price-history-chart {
-    width: 100%;
-    height: 400px; /* Výška grafu */
-    margin-top: 20px; /* Mezera nad grafem */
+    max-width: 100%;
+    height: 400px;
 }
+
