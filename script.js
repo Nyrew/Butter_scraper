@@ -9,10 +9,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let isFetching = false;
 
-    // Skryjte tabulku při načtení stránky
+    // Hide table when the page loads
     dataTable.style.display = "none";
 
-    // Funkce pro zobrazení/skrytí loading indikátoru
+    // Toggle loading indicator
     function toggleLoadingIndicator(show) {
         let loadingIndicator = document.querySelector(".loading-indicator");
         if (show) {
@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // Fetch latest data and display
     async function loadLatestData() {
         try {
             loadingBackendElement.style.display = "block"; 
@@ -46,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         <div class="shop-item">
                             <p class="shop-name">${shop.shop}</p>
                             <p class="shop-price">${shop.price} Kč</p>
-                        </div>`
+                        </div>` 
                     )
                     .join("");
 
@@ -59,24 +60,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 `;
 
                 card.addEventListener('click', async () => {
-                    console.log('Selected product ID:', item.product_id);
-                
                     const response = await fetch(`https://butter-scraper.onrender.com/get_price_history/${item.product_id}`);
-                    const url = `https://butter-scraper.onrender.com/get_price_history/${encodeURIComponent(item.product_id)}`;
-                    fetch(url)
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log(data);
-                    })
-                    .catch(error => console.error('Error:', error));
                     const history = await response.json();
-                    displayPriceHistoryChart(history);  // Use displayPriceHistoryChart
+                    displayPriceHistoryChart(history);  // Display price history chart
                 });
-                
+
                 butterCardsContainer.appendChild(card);
             });
 
-            // Fetch and display the last scrape date
+            // Display last scrape date
             const scrapeResponse = await fetch("https://butter-scraper.onrender.com/get_last_scrape_date");
             const scrapeData = await scrapeResponse.json();
 
@@ -106,11 +98,10 @@ document.addEventListener("DOMContentLoaded", () => {
     function displayPriceHistoryChart(history) {
         const ctx = document.getElementById('price-history-chart').getContext('2d');
     
-        // Convert the date strings to Date objects
-        const labels = history.map((entry) => new Date(entry.date.replace(' ', 'T')).toISOString());  // Convert to ISO string
-        const prices = history.map((entry) => entry.price);
+        const labels = history.map(entry => new Date(entry.date).toISOString());  // Ensure date format is correct
+        const prices = history.map(entry => entry.price);
     
-        // Destroy any existing chart before creating a new one
+        // Destroy the existing chart instance if it exists
         if (window.priceHistoryChart) {
             window.priceHistoryChart.destroy();
         }
@@ -134,9 +125,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 },
                 scales: {
                     x: {
-                        type: 'time',  // Ensure that Chart.js uses time scale for the x-axis
+                        type: 'time',
                         time: {
-                            unit: 'day',  // Can be adjusted based on the range of your data
+                            unit: 'day',
                             tooltipFormat: 'll',
                         },
                         title: {
@@ -153,16 +144,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
         });
-    }
-
-    // Helper function to generate a random color for each shop
-    function getRandomColor() {
-        const letters = '0123456789ABCDEF';
-        let color = '#';
-        for (let i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
     }
 
     scrapeButton.addEventListener("click", async () => {
@@ -188,16 +169,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 shopCell.textContent = item.shop;
                 row.appendChild(shopCell);
 
-                const productNameCell = document.createElement("td");
-                productNameCell.textContent = item.product_name;
-                row.appendChild(productNameCell);
+                const nameCell = document.createElement("td");
+                nameCell.textContent = item.product_name;
+                row.appendChild(nameCell);
 
                 const priceCell = document.createElement("td");
                 priceCell.textContent = `${item.price} Kč`;
                 row.appendChild(priceCell);
 
                 const quantityCell = document.createElement("td");
-                quantityCell.textContent = `${item.quantity} g`;
+                quantityCell.textContent = item.quantity;
                 row.appendChild(quantityCell);
 
                 fragment.appendChild(row);
@@ -206,16 +187,15 @@ document.addEventListener("DOMContentLoaded", () => {
             dataTableBody.appendChild(fragment);
             dataTable.style.display = "table";
 
-            loadLatestData();
+            loadingBackendElement.style.display = "none";
         } catch (error) {
-            console.error("Error scraping data:", error);
+            console.error("Scraping error:", error);
+            loadingBackendElement.textContent = "Error scraping data.";
         } finally {
             isFetching = false;
             scrapeButton.disabled = false;
-            toggleLoadingIndicator(false);
         }
     });
 
-    // Load latest data and price history on page load
     loadLatestData();
 });
