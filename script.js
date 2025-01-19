@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Fetch latest data and display
     async function loadLatestData() {
         try {
-            loadingBackendElement.style.display = "block"; 
+            loadingBackendElement.style.display = "block";
             const response = await fetch("https://butter-scraper.onrender.com/get_latest_data");
 
             const data = await response.json();
@@ -43,15 +43,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const shopsHtml = item.shops
                     .map(
-                        (shop) => ` 
+                        (shop) => `
                         <div class="shop-item">
                             <p class="shop-name">${shop.shop}</p>
                             <p class="shop-price">${shop.price} Kč</p>
-                        </div>` 
+                        </div>`
                     )
                     .join("");
 
-                card.innerHTML = ` 
+                card.innerHTML = `
                     <img src="butter_image_placeholder.jpg" alt="Butter">
                     <h3>${item.product_name}</h3>
                     <p>Quantity: ${item.quantity} g</p>
@@ -82,12 +82,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     minute: "2-digit",
                     second: "2-digit",
                 });
-                lastScrapeDateElement.innerHTML  = ` 
+                lastScrapeDateElement.innerHTML = `
                     Last saved scrape: ${formattedDate}<br> 
                     Scraping can only be saved to the database once a day, but the scrape results are displayed in the table below.
                 `;
             } else {
-                lastScrapeDateElement.innerHTML  = "Last saved scrape: Unknown";
+                lastScrapeDateElement.innerHTML = "Last saved scrape: Unknown";
             }
             loadingBackendElement.style.display = "none";
         } catch (error) {
@@ -96,17 +96,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function displayPriceHistoryChart(history) {
-        const ctx = document.getElementById('price-history-chart').getContext('2d');
-    
+        const ctx = priceHistoryChartElement.getContext('2d');
+
         // Convert the date string to a JavaScript Date object
         const labels = history.map(entry => new Date(entry.date)); // 'date' is in the format 'YYYY-MM-DD HH:MM:SS'
         const prices = history.map(entry => entry.price);
-    
+
         // Destroy the existing chart instance if it exists
         if (window.priceHistoryChart) {
             window.priceHistoryChart.destroy();
         }
-    
+
         window.priceHistoryChart = new Chart(ctx, {
             type: 'line',
             data: {
@@ -115,7 +115,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     label: 'Price History',
                     data: prices,
                     borderColor: '#4CAF50',
+                    tension: 0.1,
                     fill: false,
+                    pointBackgroundColor: '#4CAF50',
+                    pointBorderColor: '#4CAF50',
                 }]
             },
             options: {
@@ -124,12 +127,21 @@ document.addEventListener("DOMContentLoaded", () => {
                     mode: 'index',
                     intersect: false,
                 },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                return `${context.raw} Kč`;
+                            }
+                        }
+                    }
+                },
                 scales: {
                     x: {
                         type: 'time',
                         time: {
                             unit: 'day', // Group the data by day
-                            tooltipFormat: 'll',
+                            tooltipFormat: 'P',
                         },
                         title: {
                             display: true,
