@@ -98,7 +98,8 @@ document.addEventListener("DOMContentLoaded", () => {
     function displayPriceHistoryChart(history) {
         const ctx = document.getElementById('price-history-chart').getContext('2d');
     
-        const labels = history.map(entry => new Date(entry.date).toISOString());  // Ensure date format is correct
+        // Convert the date string to a JavaScript Date object
+        const labels = history.map(entry => new Date(entry.date)); // 'date' is in the format 'YYYY-MM-DD HH:MM:SS'
         const prices = history.map(entry => entry.price);
     
         // Destroy the existing chart instance if it exists
@@ -127,7 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     x: {
                         type: 'time',
                         time: {
-                            unit: 'day',
+                            unit: 'day', // Group the data by day
                             tooltipFormat: 'll',
                         },
                         title: {
