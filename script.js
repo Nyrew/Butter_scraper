@@ -7,6 +7,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let isFetching = false;
 
+    // Skryjte tabulku při načtení stránky
+    dataTable.style.display = "none";
+
     // Funkce pro zobrazení/skrytí loading indikátoru
     function toggleLoadingIndicator(show) {
         let loadingIndicator = document.querySelector(".loading-indicator");
@@ -78,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
         toggleLoadingIndicator(true);
 
         try {
-            dataTable.style.display = "none";
+            dataTable.style.display = "none"; // Ujistěte se, že je tabulka skryta před načtením nových dat
             dataTableBody.innerHTML = "";
 
             const response = await fetch("https://butter-scraper.onrender.com/scrape_save", { method: "POST" });
@@ -109,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             dataTableBody.appendChild(fragment);
-            dataTable.style.display = "table";
+            dataTable.style.display = "table"; // Zobrazí tabulku po načtení dat
 
             loadLatestData();
         } catch (error) {
