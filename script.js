@@ -246,6 +246,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } finally {
             isFetching = false;
             scrapeButton.disabled = false;
+            toggleLoadingIndicator(false);
         }
     });
 
