@@ -97,6 +97,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function displayPriceHistoryChart(history) {
         const ctx = priceHistoryChartElement.getContext('2d');
+        const placeholderMessage = document.getElementById("chart-placeholder");
+    
+        // Pokud není žádný history, zobraz placeholder a skryj graf
+        if (!history || history.length === 0) {
+            priceHistoryChartElement.style.display = "none";
+            placeholderMessage.style.display = "block";
+            return;
+        }
+    
+        // Pokud existují data, zobraz graf a skryj placeholder
+        priceHistoryChartElement.style.display = "block";
+        placeholderMessage.style.display = "none";
     
         // Group data by shop
         const groupedByShop = history.reduce((acc, entry) => {
@@ -157,7 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     x: {
                         type: 'time',
                         time: {
-                            unit: 'day', // Group the data by day
+                            unit: 'day',
                             tooltipFormat: 'P',
                         },
                         title: {
