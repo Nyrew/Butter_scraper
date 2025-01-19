@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const butterCardsContainer = document.getElementById("butter-cards");
     const scrapeButton = document.getElementById("scrape-button");
     const dataTableBody = document.querySelector("#data-table tbody");
+    const lastScrapeDateElement = document.getElementById("last-scrape-date");
 
     // Load the latest data and render the table, cards, and output
     async function loadLatestData() {
@@ -34,7 +35,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="shops-container">${shopsHtml}</div>
                 `;
                 butterCardsContainer.appendChild(card);
+                
             });
+
+            // Fetch and display the last scrape date
+            const scrapeResponse = await fetch("https://butter-scraper.onrender.com/get_last_scrape_date");
+            const scrapeData = await scrapeResponse.json();
+            lastScrapeDateElement.textContent = `Last scrape: ${scrapeData.date}`;
         } catch (error) {
             console.error("Error loading data:", error);
         }

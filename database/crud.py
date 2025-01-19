@@ -120,3 +120,11 @@ def save_product_info(db: Session, products: list):
         db.rollback()
         print(f"Error occurred: {e}")
         raise
+    
+def get_latest_scrape_date(db: Session):
+    try:
+        result = db.query(Product).order_by(Product.date.desc()).first()
+        return result.date if result else None
+    except Exception as e:
+        print(f"Error fetching the latest scrape date: {e}")
+        return None

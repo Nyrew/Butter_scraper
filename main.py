@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database.database import get_db
 from database.model import Product_info
-from database.crud import save_scraped_data, get_all_data, get_latest_data
+from database.crud import save_scraped_data, get_all_data, get_latest_data, get_latest_scrape_date
 from scraper.config import CONFIGS, PRODUCT_INFO
 from scraper.scraper import scrape_data
 
@@ -26,6 +26,11 @@ def get_all():
         
         print((f"ALL: ID: {item.product_id}, Name: {item.shop}, Price: {item.price}, Date: {item.date}"))
     return all_data
+
+@app.get("/get_last_scrape_date")
+def get_last_scrape():
+    last_scrape_date = get_latest_scrape_date(db)
+    return last_scrape_date
 
 @app.get("/get_latest_data")
 def get_latest():
