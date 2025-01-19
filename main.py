@@ -43,6 +43,7 @@ def get_latest():
         if product_name not in grouped_data:
             grouped_data[product_name] = {
                 'product_name': product_name,
+                'product_id': item['product_id'],
                 'quantity': item['quantity'],
                 'shops': []
             }
@@ -92,7 +93,7 @@ def scrape_and_save():
     
     return saved_data
 
-@app.get("/get_price_history/{product_name}")
-def get_product_history(product_name):
-    history = get_price_history(product_name, db)
+@app.get("/get_price_history/{product_id}")
+def get_product_history(product_id):
+    history = get_price_history(product_id, db)
     return history

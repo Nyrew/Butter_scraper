@@ -50,6 +50,7 @@ def get_latest_data(db: Session):
         product_dict = {
             "shop": product.shop,
             "product_name": product_info.name,
+            "product_id": product.product_id,
             "price": product.price,
             "quantity": product_info.quantity,
         }
@@ -99,12 +100,11 @@ def get_latest_scrape_date(db: Session):
         print(f"Error fetching the latest scrape date: {e}")
         return None
     
-def get_price_history(product_name: str, db: Session):
+def get_price_history(product_id: int, db: Session):
     # Vybere všechny ceny pro daný produkt a jejich čas
     price_history = (
         db.query(Product.shop, Product.date, Product.price)
-        .join(Product_info, Product.product_id == Product_info.id)
-        .filter(Product_info.name == product_name)
+        .filter(Product.product_id == product_id)
         .order_by(Product.date)
         .all()
     )

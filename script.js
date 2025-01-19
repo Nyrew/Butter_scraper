@@ -59,10 +59,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 `;
 
                 card.addEventListener('click', async () => {
-                    console.log('Selected product:', item.product_name);
+                    console.log('Selected product ID:', item.product_id);
                 
-                    const response = await fetch(`https://butter-scraper.onrender.com/get_price_history/${item.product_name}`);
-                    const url = `https://butter-scraper.onrender.com/get_price_history/${encodeURIComponent(item.product_name)}`;
+                    const response = await fetch(`https://butter-scraper.onrender.com/get_price_history/${item.product_id}`);
+                    const url = `https://butter-scraper.onrender.com/get_price_history/${encodeURIComponent(item.product_id)}`;
                     fetch(url)
                     .then(response => response.json())
                     .then(data => {
