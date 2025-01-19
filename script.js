@@ -98,10 +98,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function displayPriceHistoryChart(history) {
         const ctx = document.getElementById('price-history-chart').getContext('2d');
-
+    
+        // If a chart already exists, destroy it to avoid errors
+        if (window.chart) {
+            window.chart.destroy();
+        }
+    
         // Collect all shops and map them to their respective price history
         const shopPriceHistory = {};
-
+    
         // Iterate over the history and group data by shop
         history.forEach(entry => {
             if (!shopPriceHistory[entry.shop]) {
@@ -114,12 +119,12 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             shopPriceHistory[entry.shop].data.push({ x: entry.date, y: entry.price });
         });
-
+    
         // Prepare datasets (one for each shop)
         const datasets = Object.values(shopPriceHistory);
-
+    
         // Create the chart with each shop as a separate line
-        new Chart(ctx, {
+        window.chart = new Chart(ctx, {
             type: 'line',
             data: {
                 datasets: datasets
