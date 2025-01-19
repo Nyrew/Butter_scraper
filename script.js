@@ -97,29 +97,42 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function displayPriceHistoryChart(history) {
         const ctx = priceHistoryChartElement.getContext('2d');
-
-        // Convert the date string to a JavaScript Date object
-        const labels = history.map(entry => new Date(entry.date)); // 'date' is in the format 'YYYY-MM-DD HH:MM:SS'
-        const prices = history.map(entry => entry.price);
-
+    
+        // Group data by shop
+        const groupedByShop = history.reduce((acc, entry) => {
+            if (!acc[entry.shop]) {
+                acc[entry.shop] = [];
+            }
+            acc[entry.shop].push({
+                date: new Date(entry.date),
+                price: entry.price,
+            });
+            return acc;
+        }, {});
+    
+        // Prepare datasets for Chart.js
+        const datasets = Object.entries(groupedByShop).map(([shop, data], index) => {
+            return {
+                label: shop,
+                data: data.map(entry => ({ x: entry.date, y: entry.price })),
+                borderColor: getColor(index), // Assign a unique color
+                tension: 0.1,
+                fill: false,
+                pointBackgroundColor: getColor(index),
+                pointBorderColor: getColor(index),
+            };
+        });
+    
         // Destroy the existing chart instance if it exists
         if (window.priceHistoryChart) {
             window.priceHistoryChart.destroy();
         }
-
+    
+        // Create the new chart
         window.priceHistoryChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Price History',
-                    data: prices,
-                    borderColor: '#4CAF50',
-                    tension: 0.1,
-                    fill: false,
-                    pointBackgroundColor: '#4CAF50',
-                    pointBorderColor: '#4CAF50',
-                }]
+                datasets: datasets,
             },
             options: {
                 responsive: true,
@@ -131,9 +144,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     tooltip: {
                         callbacks: {
                             label: function (context) {
-                                return `${context.raw} Kč`;
+                                return `${context.dataset.label}: ${context.raw.y} Kč`;
                             }
                         }
+                    },
+                    legend: {
+                        display: true,
+                        position: 'top',
                     }
                 },
                 scales: {
@@ -157,6 +174,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
         });
+    }
+    
+    // Utility function to generate colors
+    function getColor(index) {
+        const colors = [
+            '#4CAF50', '#FF5733', '#2196F3', '#FFC107', '#9C27B0',
+            '#FF9800', '#E91E63', '#00BCD4', '#8BC34A', '#795548'
+        ];
+        return colors[index % colors.length];
     }
 
     scrapeButton.addEventListener("click", async () => {
