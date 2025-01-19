@@ -60,12 +60,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 card.addEventListener('click', async () => {
                     console.log('Selected product:', item.product_name);
-    
+                
                     const response = await fetch(`https://butter-scraper.onrender.com/get_price_history/${item.product_name}`);
                     const history = await response.json();
-                    displayPriceHistoryChart(history);
+                    displayPriceHistoryChart(history);  // Use displayPriceHistoryChart
                 });
-
+                
                 butterCardsContainer.appendChild(card);
             });
 
@@ -168,11 +168,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Load latest data and price history on page load
     loadLatestData();
-    // Optionally, add event listener to trigger price history load for a specific product
-    butterCardsContainer.addEventListener("click", (event) => {
-        const productName = event.target.closest(".card")?.querySelector("h3")?.textContent;
-        if (productName) {
-            loadPriceHistory(productName);
-        }
-    });
 });
