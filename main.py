@@ -1,12 +1,13 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from database.database import get_db
 from database.model import Product_info
-from database.crud import save_scraped_data, get_all_data, get_latest_data, get_latest_scrape_date
+from database.crud import save_scraped_data, get_all_data, get_latest_data, get_latest_scrape_date, get_price_history
 from scraper.config import CONFIGS, PRODUCT_INFO
 from scraper.scraper import scrape_data
 
 app = FastAPI()
+router = APIRouter()
 
 app.add_middleware(
     CORSMiddleware,
@@ -91,7 +92,7 @@ def scrape_and_save():
     
     return saved_data
 
-
-
-
-
+@app.get("/get_price_history/{product_name}")
+def get_product_history(product_name):
+    history = get_price_history(product_name, db)
+    return history

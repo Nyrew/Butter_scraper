@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const dataTableBody = document.querySelector("#data-table tbody");
     const lastScrapeDateElement = document.getElementById("last-scrape-date");
     const loadingBackendElement = document.getElementById("loading-backend");
+    const priceHistoryChartElement = document.getElementById("price-history-chart");
 
     let isFetching = false;
 
@@ -41,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const shopsHtml = item.shops
                     .map(
-                        (shop) => `
+                        (shop) => ` 
                         <div class="shop-item">
                             <p class="shop-name">${shop.shop}</p>
                             <p class="shop-price">${shop.price} Kč</p>
@@ -49,13 +50,22 @@ document.addEventListener("DOMContentLoaded", () => {
                     )
                     .join("");
 
-                card.innerHTML = `
+                card.innerHTML = ` 
                     <img src="butter_image_placeholder.jpg" alt="Butter">
                     <h3>${item.product_name}</h3>
                     <p>Quantity: ${item.quantity} g</p>
                     <hr>
                     <div class="shops-container">${shopsHtml}</div>
                 `;
+
+                card.addEventListener('click', async () => {
+                    console.log('Selected product:', item.product_name);
+    
+                    const response = await fetch(`https://butter-scraper.onrender.com/get_price_history/${item.product_name}`);
+                    const history = await response.json();
+                    displayPriceHistoryChart(history);
+                });
+
                 butterCardsContainer.appendChild(card);
             });
 
@@ -64,8 +74,8 @@ document.addEventListener("DOMContentLoaded", () => {
             const scrapeData = await scrapeResponse.json();
 
             if (scrapeData.date) {
-                const lastScrapeDate = new Date(scrapeData.date); // Převeďte string na Date objekt
-                const formattedDate = lastScrapeDate.toLocaleString("cs-CZ", { // Použijte český formát
+                const lastScrapeDate = new Date(scrapeData.date);
+                const formattedDate = lastScrapeDate.toLocaleString("cs-CZ", {
                     year: "numeric",
                     month: "2-digit",
                     day: "2-digit",
@@ -73,8 +83,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     minute: "2-digit",
                     second: "2-digit",
                 });
-                lastScrapeDateElement.innerHTML  = `
-                    Last saved scrape: ${formattedDate}<br>
+                lastScrapeDateElement.innerHTML  = ` 
+                    Last saved scrape: ${formattedDate}<br> 
                     Scraping can only be saved to the database once a day, but the scrape results are displayed in the table below.
                 `;
             } else {
@@ -86,6 +96,25 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    function displayPriceHistoryChart(history) {
+        const ctx = document.getElementById('price-history-chart').getContext('2d');
+        const labels = history.map((entry) => entry.date);
+        const prices = history.map((entry) => entry.price);
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Price History',
+                    data: prices,
+                    borderColor: '#4CAF50',
+                    fill: false,
+                }]
+            }
+        });
+    }
+
     scrapeButton.addEventListener("click", async () => {
         if (isFetching) return;
 
@@ -94,7 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
         toggleLoadingIndicator(true);
 
         try {
-            dataTable.style.display = "none"; // Ujistěte se, že je tabulka skryta před načtením nových dat
+            dataTable.style.display = "none";
             dataTableBody.innerHTML = "";
 
             const response = await fetch("https://butter-scraper.onrender.com/scrape_save", { method: "POST" });
@@ -125,7 +154,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             dataTableBody.appendChild(fragment);
-            dataTable.style.display = "table"; // Zobrazí tabulku po načtení dat
+            dataTable.style.display = "table";
 
             loadLatestData();
         } catch (error) {
@@ -137,5 +166,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    // Load latest data and price history on page load
     loadLatestData();
+    // Optionally, add event listener to trigger price history load for a specific product
+    butterCardsContainer.addEventListener("click", (event) => {
+        const productName = event.target.closest(".card")?.querySelector("h3")?.textContent;
+        if (productName) {
+            loadPriceHistory(productName);
+        }
+    });
 });

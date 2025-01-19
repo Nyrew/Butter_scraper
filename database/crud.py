@@ -39,14 +39,12 @@ def get_latest_data(db: Session):
         .group_by(Product.product_id)
         .subquery()
     )
-
     filtered_data = (
         db.query(Product, Product_info)
         .join(subquery, (Product.product_id == subquery.c.product_id) & (func.date(Product.date) == subquery.c.latest_date))
         .join(Product_info, Product.product_id == Product_info.id)
         .all()
     )
-
     butter_info = []
     for product, product_info in filtered_data:
         product_dict = {
@@ -56,35 +54,7 @@ def get_latest_data(db: Session):
             "quantity": product_info.quantity,
         }
         butter_info.append(product_dict)
-        
     return butter_info
-
-
-
-def delete_all_products(db: Session):
-    stmt = delete(Product)
-    db.execute(stmt)
-    db.commit()
-    print("Deleted")
-       
-def delete_product_by_product_criteria(db: Session, product_id: int, date: datetime):
-    stmt = delete(Product).where(
-        Product.product_id == product_id,
-        Product.date < date
-    )
-    db.execute(stmt)
-    db.commit()
-    print("Deleted")
-    
-def check_product_exists(db: Session, product_id: int, date: datetime) -> bool:    
-    check_date = date.date()
-    
-    result = db.query(Product).filter(
-        Product.product_id == product_id,
-        func.date(Product.date) == check_date
-    ).first()
-    
-    return result is not None
 
 def check_columns(db: Session):
     result = db.execute(text("""
@@ -128,3 +98,22 @@ def get_latest_scrape_date(db: Session):
     except Exception as e:
         print(f"Error fetching the latest scrape date: {e}")
         return None
+    
+def get_price_history(product_name: str, db: Session):
+    # Vybere všechny ceny pro daný produkt a jejich čas
+    price_history = (
+        db.query(Product.shop, Product.date, Product.price)
+        .join(Product_info, Product.product_id == Product_info.id)
+        .filter(Product_info.name == product_name)
+        .order_by(Product.date)
+        .all()
+    )
+    # Zpracování dat do požadovaného formátu
+    history = []
+    for shop, date, price in price_history:
+        history.append({
+            "shop": shop,
+            "date": date.strftime("%Y-%m-%d %H:%M:%S"),  # Formátujeme čas
+            "price": price
+        })
+    return history
