@@ -107,7 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const ctx = document.getElementById('price-history-chart').getContext('2d');
     
         // Convert the date strings to Date objects
-        const labels = history.map((entry) => new Date(entry.date).toISOString());  // Convert to ISO string
+        const labels = history.map((entry) => new Date(entry.date.replace(' ', 'T')).toISOString());  // Convert to ISO string
         const prices = history.map((entry) => entry.price);
     
         // Destroy any existing chart before creating a new one
