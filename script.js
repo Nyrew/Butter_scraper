@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const lastScrapeDateElement = document.getElementById("last-scrape-date");
     const loadingBackendElement = document.getElementById("loading-backend");
     const priceHistoryChartElement = document.getElementById("price-history-chart");
+    const placeholderMessage = document.getElementById("chart-placeholder");
 
     let isFetching = false;
 
