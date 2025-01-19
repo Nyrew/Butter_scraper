@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     async function loadLatestData() {
         try {
             const response = await fetch("https://butter-scraper.onrender.com/get_latest_data");
+
             const data = await response.json();
 
             butterCardsContainer.innerHTML = "";
@@ -70,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     minute: "2-digit",
                     second: "2-digit",
                 });
-                lastScrapeDateElement.textContent = `Last saved scrape: ${formattedDate}<br>
+                lastScrapeDateElement.textContent = `Last saved scrape: ${formattedDate}\n
                 Scraping can only be saved to the database once a day, but the scrape results are displayed in the table below.`;
             } else {
                 lastScrapeDateElement.textContent = "Last saved scrape: Unknown";
