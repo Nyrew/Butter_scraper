@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (show) {
             if (!loadingIndicator) {
                 loadingIndicator = document.createElement("div");
-                loadingIndicator.textContent = "Loading...";
+                loadingIndicator.textContent = "Scraping...";
                 loadingIndicator.className = "loading-indicator";
                 document.body.appendChild(loadingIndicator);
             }
@@ -70,9 +70,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     minute: "2-digit",
                     second: "2-digit",
                 });
-                lastScrapeDateElement.textContent = `Last scrape: ${formattedDate}`;
+                lastScrapeDateElement.textContent = `Last saved scrape: ${formattedDate}<br>
+                Scraping can only be saved to the database once a day, but the scrape results are displayed in the table below.`;
             } else {
-                lastScrapeDateElement.textContent = "Last scrape: Unknown";
+                lastScrapeDateElement.textContent = "Last saved scrape: Unknown";
             }
         } catch (error) {
             console.error("Error loading data:", error);
