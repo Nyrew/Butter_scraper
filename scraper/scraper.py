@@ -41,7 +41,10 @@ def get_albert_data(config: dict, headers: dict) -> dict:
         response = requests.get(config["url"], headers=headers)
         data = response.json()
         # name = data["data"]["productDetails"]["description"]
-        price = data["data"]["productDetails"]["price"]["value"]
+        if data["data"]["productDetails"]["price"]["discountedPriceFormatted"] == "null":
+            price = data["data"]["productDetails"]["price"]["value"]
+        else:
+            price = data["data"]["productDetails"]["price"]["discountedPriceFormatted"]
         # quantity = data["data"]["productDetails"]["price"]["supplementaryPriceLabel2"]
         if price:
             config["price"] = price
