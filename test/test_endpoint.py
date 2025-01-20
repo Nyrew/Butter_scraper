@@ -14,7 +14,7 @@ def get_albert_data():
         try:
             data = response.json()
             print("Data successfully retrieved:")
-            print(data["data"]["productDetails"]["description"])
+            print(data["data"]["productDetails"]["price"]["value"])
         except requests.exceptions.JSONDecodeError as e:
             print(f"Error parsing JSON: {e}")
             print("Raw Response Text:")

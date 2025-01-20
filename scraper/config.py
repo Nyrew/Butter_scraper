@@ -8,11 +8,11 @@ KOSIK_ENDPOINT = [
 ]
 
 ALBERT_ENDPOINT = [
-"https://www.albert.cz/api/v1/?operationName=ProductDetails&variables=%7B%22productCode%22%3A%2226819501%22%2C%22lang%22%3A%22cs%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22a149b8459b9e8558a7f03682a39b5d7579fec291cb8bb95f837335f01a055997%22%7D%7D",
-"https://www.albert.cz/api/v1/?operationName=ProductDetails&variables=%7B%22productCode%22%3A%2220976781%22%2C%22lang%22%3A%22cs%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22a149b8459b9e8558a7f03682a39b5d7579fec291cb8bb95f837335f01a055997%22%7D%7D",
-"https://www.albert.cz/api/v1/?operationName=ProductDetails&variables=%7B%22productCode%22%3A%2224543675%22%2C%22lang%22%3A%22cs%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22a149b8459b9e8558a7f03682a39b5d7579fec291cb8bb95f837335f01a055997%22%7D%7D",
-"https://www.albert.cz/api/v1/?operationName=ProductDetails&variables=%7B%22productCode%22%3A%2225173901%22%2C%22lang%22%3A%22cs%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22a149b8459b9e8558a7f03682a39b5d7579fec291cb8bb95f837335f01a055997%22%7D%7D",
-"https://www.albert.cz/api/v1/?operationName=ProductDetails&variables=%7B%22productCode%22%3A%2226247038%22%2C%22lang%22%3A%22cs%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22a149b8459b9e8558a7f03682a39b5d7579fec291cb8bb95f837335f01a055997%22%7D%7D"
+"https://www.albert.cz/api/v1/?operationName=ProductDetails&variables=%7B%22productCode%22%3A%2226819501%22%2C%22lang%22%3A%22cs%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22a031009b37964f1c04684b7cd15fa29f5787206be2594a1d0efa85a2fd37a4cc%22%7D%7D",
+"https://www.albert.cz/api/v1/?operationName=ProductDetails&variables=%7B%22productCode%22%3A%2220976781%22%2C%22lang%22%3A%22cs%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22a031009b37964f1c04684b7cd15fa29f5787206be2594a1d0efa85a2fd37a4cc%22%7D%7D",
+"https://www.albert.cz/api/v1/?operationName=ProductDetails&variables=%7B%22productCode%22%3A%2224543675%22%2C%22lang%22%3A%22cs%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22a031009b37964f1c04684b7cd15fa29f5787206be2594a1d0efa85a2fd37a4cc%22%7D%7D",
+"https://www.albert.cz/api/v1/?operationName=ProductDetails&variables=%7B%22productCode%22%3A%2225173901%22%2C%22lang%22%3A%22cs%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22a031009b37964f1c04684b7cd15fa29f5787206be2594a1d0efa85a2fd37a4cc%22%7D%7D",
+"https://www.albert.cz/api/v1/?operationName=ProductDetails&variables=%7B%22productCode%22%3A%2226247038%22%2C%22lang%22%3A%22cs%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22a031009b37964f1c04684b7cd15fa29f5787206be2594a1d0efa85a2fd37a4cc%22%7D%7D"
 ]
 
 BILLA_ENDPOINT = [
@@ -87,31 +87,31 @@ CONFIGS = [
     
     {
     "shop": "ALBERT", 
-    "url": "https://www.albert.cz/api/v1/?operationName=ProductDetails&variables=%7B%22productCode%22%3A%2226819501%22%2C%22lang%22%3A%22cs%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22a149b8459b9e8558a7f03682a39b5d7579fec291cb8bb95f837335f01a055997%22%7D%7D",
+    "url": "https://www.albert.cz/api/v1/?operationName=ProductDetails&variables=%7B%22productCode%22%3A%2226819501%22%2C%22lang%22%3A%22cs%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22a031009b37964f1c04684b7cd15fa29f5787206be2594a1d0efa85a2fd37a4cc%22%7D%7D",
     "product_id": 7
     },
     
     {
     "shop": "ALBERT", 
-    "url": "https://www.albert.cz/api/v1/?operationName=ProductDetails&variables=%7B%22productCode%22%3A%2220976781%22%2C%22lang%22%3A%22cs%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22a149b8459b9e8558a7f03682a39b5d7579fec291cb8bb95f837335f01a055997%22%7D%7D",
+    "url": "https://www.albert.cz/api/v1/?operationName=ProductDetails&variables=%7B%22productCode%22%3A%2220976781%22%2C%22lang%22%3A%22cs%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22a031009b37964f1c04684b7cd15fa29f5787206be2594a1d0efa85a2fd37a4cc%22%7D%7D",
     "product_id": 1
     },
         
     {
     "shop": "ALBERT", 
-    "url": "https://www.albert.cz/api/v1/?operationName=ProductDetails&variables=%7B%22productCode%22%3A%2224543675%22%2C%22lang%22%3A%22cs%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22a149b8459b9e8558a7f03682a39b5d7579fec291cb8bb95f837335f01a055997%22%7D%7D",
+    "url": "https://www.albert.cz/api/v1/?operationName=ProductDetails&variables=%7B%22productCode%22%3A%2224543675%22%2C%22lang%22%3A%22cs%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22a031009b37964f1c04684b7cd15fa29f5787206be2594a1d0efa85a2fd37a4cc%22%7D%7D",
     "product_id": 9
     },
             
     {
     "shop": "ALBERT", 
-    "url": "https://www.albert.cz/api/v1/?operationName=ProductDetails&variables=%7B%22productCode%22%3A%2225173901%22%2C%22lang%22%3A%22cs%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22a149b8459b9e8558a7f03682a39b5d7579fec291cb8bb95f837335f01a055997%22%7D%7D",
+    "url": "https://www.albert.cz/api/v1/?operationName=ProductDetails&variables=%7B%22productCode%22%3A%2225173901%22%2C%22lang%22%3A%22cs%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22a031009b37964f1c04684b7cd15fa29f5787206be2594a1d0efa85a2fd37a4cc%22%7D%7D",
     "product_id": 5
     },
     
     {
     "shop": "ALBERT", 
-    "url": "https://www.albert.cz/api/v1/?operationName=ProductDetails&variables=%7B%22productCode%22%3A%2226247038%22%2C%22lang%22%3A%22cs%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22a149b8459b9e8558a7f03682a39b5d7579fec291cb8bb95f837335f01a055997%22%7D%7D",
+    "url": "https://www.albert.cz/api/v1/?operationName=ProductDetails&variables=%7B%22productCode%22%3A%2226247038%22%2C%22lang%22%3A%22cs%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22a031009b37964f1c04684b7cd15fa29f5787206be2594a1d0efa85a2fd37a4cc%22%7D%7D",
     "product_id": 8
     },
     
