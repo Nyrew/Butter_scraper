@@ -191,3 +191,10 @@ table th {
     color: gray; 
     padding: 20px;
 }
+
+.card img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}

@@ -42,6 +42,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 const card = document.createElement("div");
                 card.className = "card";
 
+                // Dynamické načtení obrázku
+                const imagePath = `images/${item.product_id}.jpg`;
+                const defaultImagePath = `images/default.jpg`;
+
+                const imgElement = document.createElement("img");
+                imgElement.src = imagePath;
+                imgElement.alt = item.product_name;
+                imgElement.onerror = () => {
+                    imgElement.src = defaultImagePath; // Zobraz výchozí obrázek, pokud obrázek nenalezen
+                };
+
                 const shopsHtml = item.shops
                     .map(
                         (shop) => `
@@ -53,13 +64,15 @@ document.addEventListener("DOMContentLoaded", () => {
                     .join("");
 
                 card.innerHTML = `
-                    <img src="butter_image_placeholder.jpg" alt="Butter">
                     <h3>${item.product_name}</h3>
                     <p>Quantity: ${item.quantity} g</p>
                     <hr>
                     <div class="shops-container">${shopsHtml}</div>
                 `;
 
+                // Přidání obrázku jako prvního elementu karty
+                card.prepend(imgElement);
+                
                 card.addEventListener('click', async () => {
                     const response = await fetch(`https://butter-scraper.onrender.com/get_price_history/${item.product_id}`);
                     const history = await response.json();
