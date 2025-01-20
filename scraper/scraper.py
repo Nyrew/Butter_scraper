@@ -47,6 +47,7 @@ def get_albert_data(config: dict, headers: dict) -> dict:
         else:
             price = data["data"]["productDetails"]["price"]["discountedPriceFormatted"]
             price = price.replace('Kč', '').replace(',', '.').replace(' ', '').strip()
+            price = float(price)
             
         # quantity = data["data"]["productDetails"]["price"]["supplementaryPriceLabel2"]
         if price:
