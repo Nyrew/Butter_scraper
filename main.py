@@ -2,7 +2,7 @@ from fastapi import FastAPI, APIRouter, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from database.database import get_db
-from database.model import Product_Info
+from database.model import Product_info
 from database.crud import (
     save_scraped_data, 
     get_all_data, 
@@ -101,7 +101,7 @@ def get_product_info(db: Session = Depends(get_db)) -> List:
     Returns:
         List: List of product information.
     """
-    data = db.query(Product_Info).all()
+    data = db.query(Product_info).all()
     return [
         {
             "id": item.id,
