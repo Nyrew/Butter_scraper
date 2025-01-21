@@ -23,8 +23,8 @@ def save_scraped_data(db: Session, scraped_data_multiple: list):
                 date=datetime.now()
         )
         db.add(db_item)
-    db.commit()
-    db.refresh(db_item)
+        db.commit()
+        db.refresh(db_item)
     print("Data successfully saved.")
 
 def get_all_data(db: Session):
