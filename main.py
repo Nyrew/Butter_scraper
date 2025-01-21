@@ -1,13 +1,20 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
 from database.database import get_db
-from database.model import Product_info
-from database.crud import save_scraped_data, get_all_data, get_latest_data, get_latest_scrape_date, get_price_history
+from database.model import Product_Info
+from database.crud import (
+    save_scraped_data, 
+    get_all_data, 
+    get_latest_data, 
+    get_latest_scrape_date, 
+    get_price_history
+)
 from scraper.config import CONFIGS, PRODUCT_INFO
 from scraper.scraper import scrape_data
+from typing import List, Dict
 
 app = FastAPI()
-router = APIRouter()
 
 app.add_middleware(
     CORSMiddleware,
@@ -15,28 +22,58 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-    
 )
 
-db = next(get_db())
+#db = next(get_db())
 
 @app.get("/get_all_data")
-def get_all():
+def get_all(db: Session = Depends(get_db)) -> List:
+    """
+    Fetch all data from the database.
+
+    Args:
+        db (Session): SQLAlchemy session for database interaction.
+
+    Returns:
+        List: List of all data entries.
+    """
     all_data = get_all_data(db)
-    for item in all_data:
-        
-        print((f"ALL: ID: {item.product_id}, Name: {item.shop}, Price: {item.price}, Date: {item.date}"))
-    return all_data
+    return [
+        {
+            "product_id": item.product_id,
+            "shop": item.shop,
+            "price": item.price,
+            "date": item.date.isoformat()
+        }
+        for item in all_data
+    ]
 
 @app.get("/get_last_scrape_date")
-def get_last_scrape():
+def get_last_scrape(db: Session = Depends(get_db)) -> Dict:
+    """
+    Fetch the date of the latest scrape.
+
+    Args:
+        db (Session): SQLAlchemy session for database interaction.
+
+    Returns:
+        Dict: Date of the last scrape in ISO format.
+    """
     last_scrape_date = get_latest_scrape_date(db)
-    return {"date": last_scrape_date.isoformat()}
+    return {"date": last_scrape_date.isoformat() if last_scrape_date else "No data"}
 
 @app.get("/get_latest_data")
-def get_latest():
+def get_latest(db: Session = Depends(get_db)) -> List:
+    """
+    Fetch the latest data for all products.
+
+    Args:
+        db (Session): SQLAlchemy session for database interaction.
+
+    Returns:
+        List: List of the latest data entries grouped by product.
+    """
     data = get_latest_data(db)
-    # Seskupit data podle názvu produktu
     grouped_data = {}
     for item in data:
         product_name = item['product_name']
@@ -54,46 +91,78 @@ def get_latest():
     return list(grouped_data.values())
 
 @app.get("/get_product_info")
-def get_product_info():
-    data = db.query(Product_info).all()
-    for item in data:
-        print(f"ID: {item.id}, Name: {item.name}, Quantity: {item.quantity}")
+def get_product_info(db: Session = Depends(get_db)) -> List:
+    """
+    Fetch all product information from the database.
+
+    Args:
+        db (Session): SQLAlchemy session for database interaction.
+
+    Returns:
+        List: List of product information.
+    """
+    data = db.query(Product_Info).all()
+    return [
+        {
+            "id": item.id,
+            "name": item.name,
+            "quantity": item.quantity
+        }
+        for item in data
+    ]
 
 @app.post("/scrape")
-def scrape():
+def scrape() -> List:
+    """
+    Perform scraping and return the results.
+
+    Returns:
+        List: List of scraped data entries.
+    """
     try:
         scraped_data = scrape_data(CONFIGS)
-        for item in scraped_data:
-            print(item)
+        return scraped_data
     except Exception as e:
-        print(f"Trying to scrape data and got this error: {e}")
-        
-    return scraped_data
+        return {"error": f"Error during scraping: {e}"}
 
 @app.post("/scrape_save")
-def scrape_and_save():
+def scrape_and_save(db: Session = Depends(get_db)) -> List:
+    """
+    Perform scraping and save the results to the database.
+
+    Args:
+        db (Session): SQLAlchemy session for database interaction.
+
+    Returns:
+        List: List of saved data entries.
+    """
     try:
         scraped_data = scrape_data(CONFIGS)
-        print("Scrape successful!!")
-        
         saved_data = []
         for item in scraped_data:
             product_info = next((prod for prod in PRODUCT_INFO if prod["id"] == item['product_id']), None)
             saved_data.append({
-            "shop": item['shop'],
-            "product_name": product_info["name"] if product_info else None,  # Napáruj name
-            "price": item['price'],
-            "quantity": product_info['quantity'] if product_info else None
-        })
-            
+                "shop": item['shop'],
+                "product_name": product_info["name"] if product_info else None,
+                "price": item['price'],
+                "quantity": product_info['quantity'] if product_info else None
+            })
         save_scraped_data(db, scraped_data)
-        
+        return saved_data
     except Exception as e:
-        print(f"Trying to scrape and save data and got this error: {e}")
-    
-    return saved_data
+        return {"error": f"Error during scraping and saving: {e}"}
 
 @app.get("/get_price_history/{product_id}")
-def get_product_history(product_id):
+def get_product_history(product_id: int, db: Session = Depends(get_db)) -> List:
+    """
+    Fetch the price history of a specific product.
+
+    Args:
+        product_id (int): ID of the product.
+        db (Session): SQLAlchemy session for database interaction.
+
+    Returns:
+        List: List of price history entries.
+    """
     history = get_price_history(product_id, db)
     return history
