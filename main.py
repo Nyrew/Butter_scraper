@@ -12,9 +12,16 @@ from database.crud import (
 )
 from scraper.config import CONFIGS, PRODUCT_INFO
 from scraper.scraper import scrape_data
+import logging
 
+# Set up logging
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
+
+# Initialize FastAPI app
 app = FastAPI()
 
+# Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["https://nyrew.github.io"],
@@ -122,7 +129,8 @@ def scrape() -> list[dict]:
         scraped_data = scrape_data(CONFIGS)
         return scraped_data
     except Exception as e:
-        return {"error": f"Error during scraping: {e}"}
+        logger.error(f"Error during scraping: {e}")
+        return {"error": "An error occurred during scraping. Please try again later."}
 
 @app.post("/scrape_save")
 def scrape_and_save(db: Session = Depends(get_db)) -> list[dict]:
@@ -149,7 +157,8 @@ def scrape_and_save(db: Session = Depends(get_db)) -> list[dict]:
         save_scraped_data(db, scraped_data)
         return saved_data
     except Exception as e:
-        return {"error": f"Error during scraping and saving: {e}"}
+        logger.error(f"Error during scraping and saving: {e}")
+        return {"error": "An error occurred during scraping and saving. Please try again later."}
 
 @app.get("/get_price_history/{product_id}")
 def get_product_history(product_id: int, db: Session = Depends(get_db)) -> list[dict]:
@@ -163,5 +172,9 @@ def get_product_history(product_id: int, db: Session = Depends(get_db)) -> list[
     Returns:
         list[dict]: List of price history entries.
     """
-    history = get_price_history(product_id, db)
-    return history
+    try:
+        history = get_price_history(product_id, db)
+        return history
+    except Exception as e:
+        logger.error(f"Error fetching price history for product_id {product_id}: {e}")
+        return []
