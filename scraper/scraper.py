@@ -103,7 +103,7 @@ def get_globus_data(config: dict, headers: dict) -> dict:
         price = tree.xpath('//div[@class="max-md:mx-auto max-md:relative"]//span[contains(@class,"group-price")]/text()')
         if price:
             price_value = price[0].replace('Kč', '').replace(',', '.').replace('\xa0', '').strip()
-            price_value = float(price_value) + (0.90 if '.' not in price else 0.0)
+            price_value = float(price_value) + (0.90 if '.' not in price_value else 0.0)
             config["price"] = price_value
         else:
             print(f"GLOBUS: Price not found for {config['url']}")
