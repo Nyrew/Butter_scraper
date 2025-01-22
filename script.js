@@ -42,7 +42,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 const card = document.createElement("div");
                 card.className = "card";
 
-                // Dynamické načtení obrázku
                 const imagePath = `images/${item.product_id}.jpg`;
                 const defaultImagePath = `images/default.jpg`;
 
@@ -50,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 imgElement.src = imagePath;
                 imgElement.alt = item.product_name;
                 imgElement.onerror = () => {
-                    imgElement.src = defaultImagePath; // Zobraz výchozí obrázek, pokud obrázek nenalezen
+                    imgElement.src = defaultImagePath;
                 };
 
                 const shopsHtml = item.shops
@@ -70,19 +69,17 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="shops-container">${shopsHtml}</div>
                 `;
 
-                // Přidání obrázku jako prvního elementu karty
                 card.prepend(imgElement);
                 
                 card.addEventListener('click', async () => {
                     const response = await fetch(`https://butter-scraper.onrender.com/get_price_history/${item.product_id}`);
                     const history = await response.json();
-                    displayPriceHistoryChart(history);  // Display price history chart
+                    displayPriceHistoryChart(history); 
                 });
 
                 butterCardsContainer.appendChild(card);
             });
 
-            // Display last scrape date
             const scrapeResponse = await fetch("https://butter-scraper.onrender.com/get_last_scrape_date");
             const scrapeData = await scrapeResponse.json();
 
@@ -113,14 +110,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const ctx = priceHistoryChartElement.getContext('2d');
         const placeholderMessage = document.getElementById("chart-placeholder");
     
-        // Pokud není žádný history, zobraz placeholder a skryj graf
         if (!history || history.length === 0) {
             priceHistoryChartElement.style.display = "none";
             placeholderMessage.style.display = "block";
             return;
         }
     
-        // Pokud existují data, zobraz graf a skryj placeholder
         priceHistoryChartElement.style.display = "block";
         placeholderMessage.style.display = "none";
     
