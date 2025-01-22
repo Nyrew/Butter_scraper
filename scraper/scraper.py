@@ -4,8 +4,19 @@ from lxml import html
 
 
 def get_kosik_data(config: dict, headers: dict) -> dict:
+    """
+    Fetch product data from KOSIK API.
+
+    Args:
+        config (dict): Configuration for the specific product.
+        headers (dict): HTTP headers for the request.
+
+    Returns:
+        dict: Updated configuration with the price.
+    """
     try:
         response = requests.get(config["url"], headers=headers)
+        response.raise_for_status()  # Raise an exception for HTTP errors
         data = response.json()
         # name = data["product"]["name"]
         price = data["product"]["price"]
@@ -14,71 +25,101 @@ def get_kosik_data(config: dict, headers: dict) -> dict:
             config["price"] = price
         else:
             print(f"KOSIK: Price not found for {config['url']}")
-        # print(f"KOSIK: Name:{name}, price:{price}, quantity:{quantity}")
     except Exception as e:
         print(f"Error in get_kosik_data for {config['url']}: {e}")
     return config
 
+
 def get_billa_data(config: dict, headers: dict) -> dict:
+    """
+    Fetch product data from BILLA.
+
+    Args:
+        config (dict): Configuration for the specific product.
+        headers (dict): HTTP headers for the request.
+
+    Returns:
+        dict: Updated configuration with the price.
+    """
     try:
         response = requests.get(config["url"], headers=headers)
+        response.raise_for_status()
         tree = html.fromstring(response.content)
         # name = tree.xpath('//h1[@class="ws-product-slug-main__title text-base-color h2 ml-md-2"]/text()')
         price = tree.xpath('//div[contains(@class, "product-slug-main")]//div[contains(@class, "product-price-type__value")]/text()')
-        price = price[0].replace('Kč', '').replace(',', '.').replace('\xa0', '').strip()
-        price = float(price)
         if price:
-            config["price"] = price
+            config["price"] = float(price[0].replace('Kč', '').replace(',', '.').replace('\xa0', '').strip())
         else:
             print(f"BILLA: Price not found for {config['url']}")
-        # print(f"BILLA: Name: {name}, Price: {price}")
     except Exception as e:
         print(f"Error in get_billa_data for {config['url']}: {e}")
     return config
 
 def get_albert_data(config: dict, headers: dict) -> dict:
+    """
+    Fetch product data from ALBERT API.
+
+    Args:
+        config (dict): Configuration for the specific product.
+        headers (dict): HTTP headers for the request.
+
+    Returns:
+        dict: Updated configuration with the price.
+    """
     try:
         response = requests.get(config["url"], headers=headers)
+        response.raise_for_status()
         data = response.json()
         # name = data["data"]["productDetails"]["description"]
-        if data["data"]["productDetails"]["price"]["discountedPriceFormatted"] == "null" \
-            or not data["data"]["productDetails"]["price"]["discountedPriceFormatted"]:
-            price = data["data"]["productDetails"]["price"]["value"]
-        else:
-            price = data["data"]["productDetails"]["price"]["discountedPriceFormatted"]
-            price = price.replace('Kč', '').replace(',', '.').replace(' ', '').strip()
-            price = float(price)
-            
-        # quantity = data["data"]["productDetails"]["price"]["supplementaryPriceLabel2"]
+        price_data = data.get("data", {}).get("productDetails", {}).get("price", {})
+        discounted_price = price_data.get("discountedPriceFormatted")
+        price = float(price_data.get("value", 0)) if not discounted_price else float(discounted_price.replace('Kč', '').replace(',', '.').strip())
+
         if price:
             config["price"] = price
         else:
-            print(f"GLOBUS: Price not found for {config['url']}")
-        # print(f"ALBERT: Name:{name}, price:{price}, quantity:{quantity}")
+            print(f"ALBERT: Price not found for {config['url']}")
     except Exception as e:
         print(f"Error in get_albert_data for {config['url']}: {e}")
     return config
     
 
 def get_globus_data(config: dict, headers: dict) -> dict:
+    """
+    Fetch product data from GLOBUS.
+
+    Args:
+        config (dict): Configuration for the specific product.
+        headers (dict): HTTP headers for the request.
+
+    Returns:
+        dict: Updated configuration with the price.
+    """
     try:
         response = requests.get(config["url"], headers=headers)
+        response.raise_for_status()
         tree = html.fromstring(response.content)
         # name = tree.xpath('//h1[@class="font-secondary text-xl sm:text-2xl md:text-3xl font-semibold text-gray-600 mb-2 sm:mb-4"]/text()')
         price = tree.xpath('//div[@class="max-md:mx-auto max-md:relative"]//span[contains(@class,"group-price")]/text()')
-        price = price[0].replace('Kč', '').replace(',', '.').replace('\xa0', '').strip()
-        price = float(price) + (0.90 if '.' not in price else 0.0)
         if price:
-            config["price"] = price
+            price_value = float(price[0].replace('Kč', '').replace(',', '.').replace('\xa0', '').strip())
+            config["price"] = price_value
         else:
             print(f"GLOBUS: Price not found for {config['url']}")
-        # print(f"GLOBUS: Name: {name}, Price: {price}")
     except Exception as e:
         print(f"Error in get_globus_data for {config['url']}: {e}")
     return config
 
-# Funkce pro scraping
-def scrape_data(configs: list) -> list:
+def scrape_data(configs: list[dict]) -> list[dict]:
+    """
+    Scrape data for all configured shops.
+
+    Args:
+        configs (list[dict]): List of configurations for each product.
+
+    Returns:
+        list[dict]: List of updated configurations with scraped prices.
+    """
     headers: dict = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
     }
@@ -97,12 +138,3 @@ def scrape_data(configs: list) -> list:
         else:
             print(f"Unsupported shop: {shop}")
     return configs
-
-            
-# if __name__=="__main__":
-#     #get_kosik_data(KOSIK_ENDPOINT)
-#     #get_tesco_data(TESCO_ENDPOINT)
-#     #get_albert_data(ALBERT_ENDPOINT)
-#     result = scrape_data(CONFIGS)
-#     for item in result:
-#         print(item)

@@ -12,7 +12,6 @@ from database.crud import (
 )
 from scraper.config import CONFIGS, PRODUCT_INFO
 from scraper.scraper import scrape_data
-from typing import List, Dict
 
 app = FastAPI()
 
@@ -27,7 +26,7 @@ app.add_middleware(
 #db = next(get_db())
 
 @app.get("/get_all_data")
-def get_all(db: Session = Depends(get_db)) -> List:
+def get_all(db: Session = Depends(get_db)) -> list[dict]:
     """
     Fetch all data from the database.
 
@@ -35,7 +34,7 @@ def get_all(db: Session = Depends(get_db)) -> List:
         db (Session): SQLAlchemy session for database interaction.
 
     Returns:
-        List: List of all data entries.
+        list[dict]: List of all data entries.
     """
     all_data = get_all_data(db)
     return [
@@ -49,7 +48,7 @@ def get_all(db: Session = Depends(get_db)) -> List:
     ]
 
 @app.get("/get_last_scrape_date")
-def get_last_scrape(db: Session = Depends(get_db)) -> Dict:
+def get_last_scrape(db: Session = Depends(get_db)) -> dict:
     """
     Fetch the date of the latest scrape.
 
@@ -57,13 +56,13 @@ def get_last_scrape(db: Session = Depends(get_db)) -> Dict:
         db (Session): SQLAlchemy session for database interaction.
 
     Returns:
-        Dict: Date of the last scrape in ISO format.
+        dict: Date of the last scrape in ISO format.
     """
     last_scrape_date = get_latest_scrape_date(db)
     return {"date": last_scrape_date.isoformat() if last_scrape_date else "No data"}
 
 @app.get("/get_latest_data")
-def get_latest(db: Session = Depends(get_db)) -> List:
+def get_latest(db: Session = Depends(get_db)) -> list[dict]:
     """
     Fetch the latest data for all products.
 
@@ -71,7 +70,7 @@ def get_latest(db: Session = Depends(get_db)) -> List:
         db (Session): SQLAlchemy session for database interaction.
 
     Returns:
-        List: List of the latest data entries grouped by product.
+        list[dict]: List of the latest data entries grouped by product.
     """
     data = get_latest_data(db)
     grouped_data = {}
@@ -91,7 +90,7 @@ def get_latest(db: Session = Depends(get_db)) -> List:
     return list(grouped_data.values())
 
 @app.get("/get_product_info")
-def get_product_info(db: Session = Depends(get_db)) -> List:
+def get_product_info(db: Session = Depends(get_db)) -> list[dict]:
     """
     Fetch all product information from the database.
 
@@ -99,7 +98,7 @@ def get_product_info(db: Session = Depends(get_db)) -> List:
         db (Session): SQLAlchemy session for database interaction.
 
     Returns:
-        List: List of product information.
+        list[dict]: List of product information.
     """
     data = db.query(Product_info).all()
     return [
@@ -112,12 +111,12 @@ def get_product_info(db: Session = Depends(get_db)) -> List:
     ]
 
 @app.post("/scrape")
-def scrape() -> List:
+def scrape() -> list[dict]:
     """
     Perform scraping and return the results.
 
     Returns:
-        List: List of scraped data entries.
+        list[dict]: List of scraped data entries.
     """
     try:
         scraped_data = scrape_data(CONFIGS)
@@ -126,7 +125,7 @@ def scrape() -> List:
         return {"error": f"Error during scraping: {e}"}
 
 @app.post("/scrape_save")
-def scrape_and_save(db: Session = Depends(get_db)) -> List:
+def scrape_and_save(db: Session = Depends(get_db)) -> list[dict]:
     """
     Perform scraping and save the results to the database.
 
@@ -134,7 +133,7 @@ def scrape_and_save(db: Session = Depends(get_db)) -> List:
         db (Session): SQLAlchemy session for database interaction.
 
     Returns:
-        List: List of saved data entries.
+        list[dict]: List of saved data entries.
     """
     try:
         scraped_data = scrape_data(CONFIGS)
@@ -153,7 +152,7 @@ def scrape_and_save(db: Session = Depends(get_db)) -> List:
         return {"error": f"Error during scraping and saving: {e}"}
 
 @app.get("/get_price_history/{product_id}")
-def get_product_history(product_id: int, db: Session = Depends(get_db)) -> List:
+def get_product_history(product_id: int, db: Session = Depends(get_db)) -> list[dict]:
     """
     Fetch the price history of a specific product.
 
@@ -162,7 +161,7 @@ def get_product_history(product_id: int, db: Session = Depends(get_db)) -> List:
         db (Session): SQLAlchemy session for database interaction.
 
     Returns:
-        List: List of price history entries.
+        list[dict]: List of price history entries.
     """
     history = get_price_history(product_id, db)
     return history
